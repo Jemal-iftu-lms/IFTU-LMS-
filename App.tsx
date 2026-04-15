@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
@@ -121,6 +122,7 @@ const App: React.FC = () => {
           {renderContent()}
         </main>
       </div>
+      <Analytics />
     </div>
   );
 };
