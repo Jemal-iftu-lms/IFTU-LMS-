@@ -1,150 +1,202 @@
 
-export const SOCIAL_LINKS = {
-  TELEGRAM: 'https://t.me/jemal_fano',
-  FACEBOOK: 'https://facebook.com/jemal_fano',
-  YOUTUBE: 'https://youtube.com/@jemal_fano'
-};
-
-export const ADMIN_PROFILE = {
-  NAME: 'Jemal Fano',
-  EMAIL: 'admin@iftu.edu'
-};
-
-export enum NavSection {
-  DASHBOARD = 'DASHBOARD',
-  COURSES = 'COURSES',
-  TEACHERS = 'TEACHERS',
-  STUDENTS = 'STUDENTS',
-  SCHOOLS = 'SCHOOLS',
-  AI_ASSISTANT = 'AI_ASSISTANT',
-  DOCUMENTATION = 'DOCUMENTATION',
-  PROFILE = 'PROFILE',
-  ABOUT = 'ABOUT',
-  EXAMS = 'EXAMS',
-  MATERIALS = 'MATERIALS',
-  NEWS = 'NEWS',
-  RESULTS = 'RESULTS',
-  GRADEBOOK = 'GRADEBOOK',
-  REPORTS = 'REPORTS'
+export enum EducationLevel {
+  SECONDARY = 'Secondary (Grades 9-12)',
+  TVET = 'TVET College'
 }
 
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  role: 'Admin' | 'Teacher' | 'Student';
+export enum Grade {
+  G9 = 'Grade 9',
+  G10 = 'Grade 10',
+  G11 = 'Grade 11',
+  G12 = 'Grade 12',
+  TVET_LEVEL_1 = 'TVET Level 1',
+  TVET_LEVEL_2 = 'TVET Level 2',
+  TVET_LEVEL_3 = 'TVET Level 3',
+  TVET_LEVEL_4 = 'TVET Level 4'
 }
 
-export interface User {
+export enum Stream {
+  GENERAL = 'General',
+  NATURAL_SCIENCE = 'Natural Science',
+  SOCIAL_SCIENCE = 'Social Science'
+}
+
+export type ExamType = 'mid' | 'final' | 'mock-eaes' | 'national-eaes' | 'tvet-exit' | 'National';
+export type Language = 'en' | 'am' | 'om';
+export type QuestionType = 'multiple-choice' | 'true-false' | 'fill-in-the-blank' | 'short-answer';
+export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+
+export interface Lesson {
   id: string;
-  name: string;
-  email: string;
-  role: 'Teacher' | 'Student' | 'Admin';
-  status: 'Active' | 'Inactive';
-  joinDate: string;
-  avatar: string;
-  department: string;
-  phone?: string;
+  title: string;
+  duration: string;
+  content: string;
+  type: 'video' | 'reading' | 'quiz'; 
+  contentType: 'video' | 'reading' | 'quiz' | 'assignment' | 'document';
+  videoUrl?: string;
+  pdfUrl?: string;
+  fileUrl?: string; // Generic URL for PDF, Word, PPT
+  fileName?: string;
+  isCompleted?: boolean;
+  questions?: Question[];
+}
+
+export interface CourseMaterial {
+  id: string;
+  title: string;
+  type: 'document' | 'video' | 'link' | 'other';
+  url: string;
+  addedAt: string;
 }
 
 export interface Course {
   id: string;
   title: string;
+  code: string;
+  grade: Grade;
+  stream: Stream;
+  level: EducationLevel;
+  thumbnail: string;
+  description: string;
+  syllabus?: string; // Markdown or URL
+  learningObjectives?: string[];
+  materials?: CourseMaterial[];
+  lessons: Lesson[];
   instructor: string;
-  students: number;
-  progress: number;
-  category: string;
-  image: string;
-  description?: string;
-  objectives?: string[];
+  instructorId?: string;
+  instructorEmail?: string;
+  instructorPhoto?: string;
+  subject: string;
+  enrolledStudents?: number;
+  enrolledCount?: number; // Alias for enrolledStudents
+  rating?: number;
+  points?: number;
   prerequisites?: string[];
-  duration?: string;
 }
 
 export interface Question {
   id: string;
   text: string;
+  type: QuestionType;
   options: string[];
-  correctAnswer: number; 
+  correctAnswer: number | string;
+  points: number;
+  category: string;
+  tags?: string[];
 }
 
 export interface Exam {
   id: string;
   title: string;
-  courseId: string;
-  courseTitle: string;
-  teacherId: string;
-  date: string;
-  duration: string; 
-  totalQuestions: number;
-  status: 'Upcoming' | 'Active' | 'Completed';
-  questions?: Question[];
+  courseCode: string;
+  grade: Grade;
+  stream: Stream;
+  academicYear: number;
+  durationMinutes: number;
+  questions: Question[];
+  categories?: string[];
+  totalPoints: number;
+  status: 'draft' | 'published' | 'closed';
+  type: ExamType;
+  semester: 1 | 2;
+  subject: string;
+  difficulty?: Difficulty;
+  description?: string;
+  keyConcepts?: { term: string; meaning: string }[];
 }
 
-export interface ExamAttempt {
+export interface News {
   id: string;
+  date: string;
+  tag: string;
+  title: string;
+  summary: string;
+  content: string;
+  image: string;
+}
+
+export interface Badge {
+  id: string;
+  title: string;
+  icon: string;
+  earnedAt: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  role: 'student' | 'teacher' | 'admin' | 'content_creator' | 'teaching_assistant' | 'guest_user';
+  grade?: Grade;
+  stream?: Stream;
+  level?: EducationLevel;
+  points: number;
+  status: 'active' | 'pending' | 'suspended';
+  email: string;
+  joinedDate: string;
+  nid?: string; // National Identity Number
+  studentIdNumber?: string; // Student ID Number
+  academicRecordsUrl?: string; // URL for uploaded academic records
+  gender?: 'Male' | 'Female' | 'Other';
+  dob?: string;
+  salary?: number; // Base Salary for Teachers or Stipend for Students
+  photo?: string;
+  age?: number;
+  department?: string; // Teachers only
+  subjects?: string[]; // Teachers only
+  phoneNumber?: string;
+  address?: string;
+  preferredLanguage: Language;
+  badges: Badge[];
+  school?: string;
+  completedLessons?: string[];
+  completedExams?: string[];
+  completedCourses?: string[];
+  certificatesPaid?: string[];
+}
+
+export interface ExamResult {
   examId: string;
   studentId: string;
   score: number;
-  total: number;
-  date: string;
-  answers: Record<string, number>;
+  totalPoints: number;
+  completedAt: string;
+  timeSpentSeconds: number;
+  answers: Record<string, number | string>;
+  categoryBreakdown: Record<string, { correct: number; total: number }>;
 }
 
-export interface Material {
+export interface Assignment {
   id: string;
   title: string;
-  type: 'Note' | 'Document' | 'Video' | 'Link';
-  courseTitle: string;
-  uploadDate: string;
-  size?: string;
-  author: string;
+  description: string;
+  courseCode: string;
+  dueDate: string;
+  points: number;
+  rubricUrl?: string;
+  status: 'draft' | 'published' | 'closed';
+  progressStatus?: 'Not Started' | 'In Progress' | 'Completed' | 'Needs Review';
 }
 
-export interface School {
+export interface AssignmentSubmission {
   id: string;
-  name: string;
-  location: string;
-  students: number;
-  phone: string;
-  web: string;
-  type: 'Central' | 'Branch' | 'Hub' | 'Online';
-}
-
-export interface NewsPost {
-  id: string;
-  title: string;
-  content: string;
-  date: string;
-  author: string;
-  image: string;
-  category: 'Update' | 'Event' | 'Institutional';
-}
-
-export interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  date: string;
-  priority: 'High' | 'Medium' | 'Low';
-}
-
-export interface StudentResult {
-  id: string;
-  examTitle: string;
-  courseTitle: string;
-  score: number;
-  total: number;
-  grade: string;
-  date: string;
-  status: 'Pass' | 'Fail';
-}
-
-export interface GradeEntry {
+  assignmentId: string;
   studentId: string;
   studentName: string;
-  avatar: string;
-  examResults: StudentResult[];
-  overallGpa: number;
+  submittedAt: string;
+  fileUrl: string;
+  status: 'submitted' | 'graded' | 'returned';
+  gradedFileUrl?: string;
+  grade?: number;
+  feedback?: string;
+}
+
+export interface AppNotification {
+  id: string;
+  userId: string; // The ID of the student or teacher who receives the notification
+  title: string;
+  message: string;
+  type: 'assignment' | 'submission' | 'grade';
+  isRead: boolean;
+  createdAt: string;
+  link?: string; // Optional link to the assignment or submission
 }
